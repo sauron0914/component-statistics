@@ -14,7 +14,7 @@ program.usage('<command>')
 program
     .command('do')
     .description('create your Template')
-    .action(commands.analysis)
+    .action(commands.statistics)
 
 program.parse(process.argv)
 

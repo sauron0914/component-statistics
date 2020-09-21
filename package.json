@@ -1,10 +1,10 @@
 {
-  "name": "component-analysis",
+  "name": "component-statistics",
   "version": "1.0.0",
   "description": "",
   "main": "rollup.config.js",
   "bin": {
-    "component-analysis": "./bin/init.js"
+    "component-statistics": "./bin/init.js"
   },
   "scripts": {
     "dev": "rollup -c -w",
@@ -12,11 +12,11 @@
   },
   "keywords": [
     "component",
-    "analysis"
+    "statistics"
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sauron0914/component-analysis.git"
+    "url": "git+https://github.com/sauron0914/component-statistics.git"
   },
   "author": "sauron0914(s_sauron@163.com)",
   "license": "ISC",

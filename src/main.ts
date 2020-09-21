@@ -3,7 +3,7 @@ const fs = require('fs')
 const Grid = require("console-grid");
 const cwd = process.cwd() + '/'
 
-interface AnalysisItem {
+interface StatisticsItem {
     [key: string]: {
         count: number
         elements: string[]
@@ -14,7 +14,7 @@ function cutPath(str: string) {
     return str.replace(cwd.substr(0, cwd.length-1), '') 
 }
 
-const findComponents = (path: string, res: AnalysisItem)=> {
+const findComponents = (path: string, res: StatisticsItem)=> {
     const readFileSyncRes = fs.readFileSync(path , 'utf8')
     const matchRes: string[] = readFileSyncRes.match(/\<[A-Z]\w+/g)
     if(!matchRes) return
@@ -32,10 +32,10 @@ const findComponents = (path: string, res: AnalysisItem)=> {
     });
 }
 
-const analysis  = ()=> {
+const statistics  = ()=> {
 
     const grid = new Grid();
-    const res: AnalysisItem = {}
+    const res: StatisticsItem = {}
     traverseFile(cwd.substr(0, cwd.length-1), path=> findComponents(path, res))
     var data = {
         option: {
@@ -69,4 +69,4 @@ const analysis  = ()=> {
     grid.render(data);
 }
 
-export { analysis }
+export { statistics }
