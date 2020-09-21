@@ -1,6 +1,6 @@
 import { traverseFile } from './utils'
 const fs = require('fs')
-const Grid = require("console-grid");
+const exec = require('child_process').exec
 const cwd = process.cwd() + '/'
 
 interface StatisticsItem {
@@ -16,7 +16,7 @@ function cutPath(str: string) {
 
 const findComponents = (path: string, res: StatisticsItem)=> {
     const readFileSyncRes = fs.readFileSync(path , 'utf8')
-    const matchRes: string[] = readFileSyncRes.match(/\<[A-Z]\w+/g)
+    const matchRes: string[] = readFileSyncRes.match(/(\<[A-Z]\w+)|(\<[a-z]\w+-\w+)/g)
     if(!matchRes) return
     matchRes.forEach(item => {
         const el = item.substr(1)
@@ -33,40 +33,31 @@ const findComponents = (path: string, res: StatisticsItem)=> {
 }
 
 const statistics  = ()=> {
-
-    const grid = new Grid();
     const res: StatisticsItem = {}
     traverseFile(cwd.substr(0, cwd.length-1), path=> findComponents(path, res))
-    var data = {
-        option: {
-            sortField: "count"
-        },
-        columns: [{
-            id: "name",
-            name: "ComponentName",
-            type: "string",
-            maxWidth: 38
-        }, {
-            id: "count",
-            name: "Count",
-            type: "string",
-            maxWidth: 7
-        },{
-            id: "paths",
-            name: "Paths",
-            type: "string",
-            maxWidth: 200
-        }],
-        rows: Object.entries(res).reduce((pre, [el, value])=>{
-            pre.push({
-                name: `\x1b[40m \x1b[31m ${el} \x1b[0m`,
-                count: value.count,
-                paths: value.elements.join('\n')
-            })
-            return pre
-        }, [])
-    };
-    grid.render(data);
+
+    const data = Object.entries(res).reduce((pre,[key, value])=>{
+        pre.push({
+            componentName: key,
+            count: value.count,
+            paths: value.elements
+        })
+        return pre
+    },[]).sort((a, b)=> b.count-a.count).reduce((pre, item)=>{
+        pre[item.componentName] = {
+            count: item.count,
+            paths: item.paths
+        }
+        return pre
+    },{})
+    fs.writeFile(cwd+'components-statistics.json', JSON.stringify(data, null, '\t'), {
+
+    } ,function(err){
+        if(err) console.log(err)
+        console.log('文件创建成功，地址：' + cwd+'components-statistics.json');
+        console.log('!!!注意：默认会在当前目录下生成一个components-statistics.json文件')
+        exec( 'open ' + cwd+'components-statistics.json')
+    })
 }
 
 export { statistics }
