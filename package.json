@@ -14,7 +14,11 @@
     "component",
     "analysis"
   ],
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sauron0914/component-analysis.git"
+  },
+  "author": "sauron0914(s_sauron@163.com)",
   "license": "ISC",
   "dependencies": {
     "@types/node": "^13.9.1",
