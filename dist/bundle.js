@@ -29,6 +29,7 @@ var traverseFile = function (src, callback) {
 
 var fs = require('fs');
 var exec = require('child_process').exec;
+var Grid = require("console-grid");
 var cwd = process.cwd() + '/';
 function cutPath(str) {
     return str.replace(cwd.substr(0, cwd.length - 1), '');
@@ -50,6 +51,33 @@ var findComponents = function (path, res) {
                 elements: [cutPath(path)]
             };
         }
+    });
+};
+var createGird = function (val) {
+    var grid = new Grid();
+    grid.render({
+        option: {
+            sortField: "count"
+        },
+        columns: [{
+                id: "componentName",
+                name: "componentName",
+                type: "string",
+                maxWidth: 38
+            }, {
+                id: "count",
+                name: "Value",
+                type: "string",
+                maxWidth: 7
+            }],
+        rows: Object.entries(val).reduce(function (pre, _a) {
+            var key = _a[0], value = _a[1];
+            pre.push({
+                componentName: "\u001B[31m " + key + " \u001B[39m",
+                count: value.count
+            });
+            return pre;
+        }, [])
     });
 };
 var statistics = function () {
@@ -75,6 +103,7 @@ var statistics = function () {
             console.log(err);
         console.log('文件创建成功，地址：' + cwd + 'components-statistics.json');
         console.log('!!!注意：默认会在当前目录下生成一个components-statistics.json文件');
+        createGird(data);
         exec('open ' + cwd + 'components-statistics.json');
     });
 };
